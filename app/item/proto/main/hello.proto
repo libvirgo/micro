@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-option go_package = "libvirgo.github.io";
-package stream;
+option go_package = "app.item";
+package item;
 
 message StreamReq {
   string name = 1;
