@@ -15,6 +15,8 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation(project(":app:item:proto"))
+    compileOnly("com.google.protobuf:protobuf-java:3.22.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation(kotlin("script-runtime"))

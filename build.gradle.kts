@@ -19,7 +19,7 @@ allprojects {
             mavenCentral()
         }
         dependencies {
-            protobuf(files("$projectDir/main"))
+            protobuf(files("$projectDir/proto"))
         }
         protobuf {
             protoc {
@@ -32,18 +32,26 @@ allprojects {
             }
             generateProtoTasks {
                 all().configureEach {
+                    val lang = listOf("go", "rust", "java")
                     builtins {
                         remove("java")
-                        listOf("go", "rust", "java").forEach {
-                            id(it) {
-                                doLast {
-                                    copy {
-                                        from("$buildDir/generated/source/proto/main/$it")
-                                        into("$projectDir/proto/    $it")
-                                    }
-                                }
-                            }
+                        lang.forEach {
+                            id(it)
                         }
+                    }
+                    doLast {
+                        lang.forEach {
+                            copy {
+                                from("$buildDir/generated/source/proto/main/$it")
+                                into("$projectDir/src/main/$it")
+                            }
+                            delete("$buildDir/generated/source/proto/main/$it")
+                        }
+                        copy {
+                            from("$buildDir/generated/source/proto/main/grpc")
+                            into("$projectDir/src/main/java")
+                        }
+                        delete("$buildDir/generated/source/proto/main/grpc")
                     }
                 }
                 ofSourceSet("main").forEach {
