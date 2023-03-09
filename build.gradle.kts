@@ -10,7 +10,6 @@ group = "libvirgo.github.io"
 repositories {
     mavenCentral()
 }
-
 allprojects {
     if (project.name == "proto") {
         apply(plugin = "java")
@@ -32,6 +31,12 @@ allprojects {
             }
             generateProtoTasks {
                 all().configureEach {
+                    group = "proto"
+                    plugins {
+                        id("grpc") {
+                            outputSubDir = "java"
+                        }
+                    }
                     val lang = listOf("go", "rust", "java")
                     builtins {
                         remove("java")
@@ -42,21 +47,11 @@ allprojects {
                     doLast {
                         lang.forEach {
                             copy {
-                                from("$buildDir/generated/source/proto/main/$it")
+                                from("$generatedFilesBaseDir/main/$it")
                                 into("$projectDir/src/main/$it")
                             }
-                            delete("$buildDir/generated/source/proto/main/$it")
                         }
-                        copy {
-                            from("$buildDir/generated/source/proto/main/grpc")
-                            into("$projectDir/src/main/java")
-                        }
-                        delete("$buildDir/generated/source/proto/main/grpc")
-                    }
-                }
-                ofSourceSet("main").forEach {
-                    it.plugins {
-                        id("grpc") {}
+                        delete(files(generatedFilesBaseDir))
                     }
                 }
             }

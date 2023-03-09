@@ -3,3 +3,4 @@
 build
 HELP.md
 .direnv
+/app/item/proto/src/main/
